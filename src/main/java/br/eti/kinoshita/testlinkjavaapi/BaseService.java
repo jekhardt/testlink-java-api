@@ -29,6 +29,8 @@ import java.util.Map;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkParams;
 import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
@@ -41,6 +43,9 @@ import br.eti.kinoshita.testlinkjavaapi.util.Util;
 abstract class BaseService {
 
     private static final Integer FALSE_IN_PHP = 0;
+    
+    private static final Logger LOG = LoggerFactory
+            .getLogger(BaseService.class);
 
     /**
      * XML-RPC client.
@@ -86,9 +91,14 @@ abstract class BaseService {
 	    }
 	    params.add(executionData);
 	}
-
 	final Object o = this.xmlRpcClient.execute(methodName, params);
+	if (LOG.isDebugEnabled()) {
+	    LOG.debug("methodName {} executed with params {}", methodName, params);
+	}
 	this.checkResponseError(o);
+	if (LOG.isDebugEnabled()) {
+	    LOG.debug("methodName {} response object {}", methodName + o);
+	}
 	return o;
     }
 

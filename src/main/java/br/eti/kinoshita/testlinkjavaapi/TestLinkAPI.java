@@ -44,6 +44,7 @@ import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus;
 import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
 import br.eti.kinoshita.testlinkjavaapi.constants.ResponseDetails;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseDetails;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseStatus;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseStepAction;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestImportance;
 import br.eti.kinoshita.testlinkjavaapi.model.Attachment;
@@ -746,6 +747,49 @@ public class TestLinkAPI {
     }
 
     /**
+
+     * Update a Test Case.
+     * 
+     * @param testCaseFullExternalId
+     * @param version
+     * @param name
+     * @param summary
+     * @param preconditions
+     * @param importance
+     * @param updater
+     * @param executionType
+     * @param order
+     * @param status
+     * @param estimatedExecutionDuration
+     * @throws TestLinkAPIException
+     */
+    public void updateTestCase(String testCaseFullExternalId, String version,
+            String name, String summary, String preconditions,
+            TestImportance importance, String updater,
+            ExecutionType executionType, Integer order, TestCaseStatus status,
+            String estimatedExecutionDuration) throws TestLinkAPIException {
+        this.testCaseService.updateTestCase(testCaseFullExternalId, version,
+                name, summary, preconditions, importance, updater,
+                executionType, order, status, estimatedExecutionDuration);
+    }
+
+    public void updateTestCase(TestCase testCase) throws TestLinkAPIException {
+        this.testCaseService.updateTestCase(testCase.getFullExternalId(), // testCaseFullExternalId,
+                testCase.getVersion() != null ? testCase.getVersion()
+                        .toString() : null, // version,
+                testCase.getName(), // name,
+                testCase.getSummary(), // summary,
+                testCase.getPreconditions(), // preconditions,
+                testCase.getTestImportance(), // importance,
+                testCase.getAuthorLogin(), // updater
+                testCase.getExecutionType(), // executionType,
+                testCase.getOrder(),
+                null, // status,
+                null // estimatedExecutionDuration
+                );
+    }
+
+    /**
      * Create, Update or Push a list of TestCaseSteps in a Test Case.
      * 
      * @param testCaseExternalId
@@ -758,7 +802,7 @@ public class TestLinkAPI {
 	    Integer version, TestCaseStepAction action,
 	    List<TestCaseStep> testCaseSteps) throws TestLinkAPIException {
 	return this.testCaseService.createTestCaseSteps(testCaseExternalId,
-		version, TestCaseStepAction.CREATE, testCaseSteps);
+                version, action, testCaseSteps);
     }
 
     /**
@@ -1057,7 +1101,7 @@ public class TestLinkAPI {
      * Retrieves list of Custom Fields for a Test Case.
      * 
      * @param testCaseId
-     * @param testCaseExternalId
+     * @param testCaseFullExternalId
      * @param versionNumber
      * @param testProjectId
      * @param customFieldName
@@ -1065,12 +1109,32 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public CustomField getTestCaseCustomFieldDesignValue(Integer testCaseId,
-	    Integer testCaseExternalId, Integer versionNumber,
+            String testCaseFullExternalId, Integer versionNumber,
 	    Integer testProjectId, String customFieldName,
 	    ResponseDetails details) throws TestLinkAPIException {
 	return this.testCaseService.getTestCaseCustomFieldDesignValue(
-		testCaseId, testCaseExternalId, versionNumber, testProjectId,
+                testCaseId, testCaseFullExternalId, versionNumber, testProjectId,
 		customFieldName, details);
+    }
+    
+    /**
+     * Sets list of Custom Fields for a Test Case. Creates if not exists.
+     * Updates if it does.
+     *
+     * @param testCaseExternalId
+     * @param versionNumber
+     * @param testProjectId
+     * @param customFieldName
+     * @param customFieldValue
+     *
+     * @throws TestLinkAPIException
+     */
+    public void createTestCaseCustomFieldDesignValue(String testCaseExternalId,
+            Integer versionNumber, Integer testProjectId,
+            String customFieldName, String customFieldValue) {
+        this.testCaseService.createTestCaseCustomFieldDesignValue(
+                testCaseExternalId, versionNumber, testProjectId,
+                customFieldName, customFieldValue);
     }
     
     /**

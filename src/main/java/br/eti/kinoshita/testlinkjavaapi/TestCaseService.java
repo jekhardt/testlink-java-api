@@ -37,6 +37,7 @@ import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus;
 import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
 import br.eti.kinoshita.testlinkjavaapi.constants.ResponseDetails;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseDetails;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseStatus;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestCaseStepAction;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestImportance;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkMethods;
@@ -108,6 +109,8 @@ class TestCaseService extends BaseService {
 	TestCase testCase = null;
 
 	Integer id = null;
+	String fullExternalId = null;
+	Integer version = null;
 
 	testCase = new TestCase(id, testCaseName, testSuiteId, testProjectId,
 		authorLogin, summary, steps, preconditions, importance,
@@ -124,12 +127,73 @@ class TestCaseService extends BaseService {
 	    id = Util.getInteger(responseMap,
 		    TestLinkResponseParams.ID.toString());
 	    testCase.setId(id);
+        fullExternalId = Util.getString(responseMap,
+                TestLinkResponseParams.FULL_TEST_CASE_EXTERNAL_ID
+                        .toString());
+        testCase.setFullExternalId(fullExternalId);
+        version = Util.getInteger((Map<String, Object>) responseMap
+                .get(TestLinkResponseParams.ADDITIONAL_INFO.toString()),
+                TestLinkResponseParams.VERSION_NUMBER.toString());
+        testCase.setVersion(version);
 	} catch (XmlRpcException xmlrpcex) {
 	    throw new TestLinkAPIException("Error creating test plan: "
 		    + xmlrpcex.getMessage(), xmlrpcex);
 	}
 
 	return testCase;
+    }
+
+    /**
+     *
+     * @param testCaseFullExternalId
+     * @param version
+     * @param name
+     * @param summary
+     * @param preconditions
+     * @param importance
+     * @param updater
+     * @param executionType
+     * @param status
+     * @param estimatedExecutionDuration
+     * @throws TestLinkAPIException
+     */
+    public void updateTestCase(String testCaseFullExternalId, String version,
+	    String name, String summary, String preconditions,
+            TestImportance importance, String updater,
+            ExecutionType executionType, Integer order,
+	    TestCaseStatus status, String estimatedExecutionDuration)
+	    throws TestLinkAPIException {
+	try {
+	    Map<String, Object> executionData = new HashMap<String, Object>();
+	    executionData.put(TestLinkParams.TEST_CASE_EXTERNAL_ID.toString(),
+		    testCaseFullExternalId);
+	    executionData.put(TestLinkParams.VERSION.toString(),
+		    Util.getStringValueOrNull(version));
+        executionData.put(TestLinkParams.TEST_CASE_NAME.toString(),
+		    Util.getStringValueOrNull(name));
+	    executionData.put(TestLinkParams.SUMMARY.toString(),
+		    Util.getStringValueOrNull(summary));
+	    executionData.put(TestLinkParams.PRECONDITIONS.toString(),
+		    Util.getStringValueOrNull(preconditions));
+	    executionData.put(TestLinkParams.IMPORTANCE.toString(),
+		    importance.getValue());
+	    executionData.put(TestLinkParams.UPDATER_LOGIN.toString(), updater);
+        executionData.put(TestLinkParams.EXECUTION_TYPE.toString(),
+		    executionType.getValue());
+	    executionData.put(TestLinkParams.ORDER.toString(), order);
+	    executionData.put(TestLinkParams.STATUS.toString(),
+		    status.getValue());
+	    executionData.put(
+		    TestLinkParams.ESTIMATED_EXECUTION_DURATION.toString(),
+		    Util.getStringValueOrNull(estimatedExecutionDuration));
+
+	    this.executeXmlRpcCall(TestLinkMethods.UPDATE_TEST_CASE.toString(),
+		    executionData);
+
+        } catch (XmlRpcException xmlrpcex) {
+            throw new TestLinkAPIException("Error updating test case: "
+                    + xmlrpcex.getMessage(), xmlrpcex);
+        }
     }
 
     public Map<String, Object> createTestCaseSteps(String testCaseExternalId,
@@ -689,7 +753,7 @@ class TestCaseService extends BaseService {
      * @throws TestLinkAPIException
      */
     protected CustomField getTestCaseCustomFieldDesignValue(Integer testCaseId,
-	    Integer testCaseExternalId, Integer versionNumber,
+	    String testCaseExternalId, Integer versionNumber,
 	    Integer testProjectId, String customFieldName,
 	    ResponseDetails details) throws TestLinkAPIException {
 	CustomField customField = null;
@@ -726,6 +790,43 @@ class TestCaseService extends BaseService {
 	}
 
 	return customField;
+    }
+    
+    /**
+     * @author Jeff Ekhardt
+     * 
+     * @param testCaseExternalId
+     * @param versionNumber
+     * @param testProjectId
+     * @param customFieldName
+     * @param customFieldValue
+     * @throws TestLinkAPIException
+     */
+    protected void createTestCaseCustomFieldDesignValue(
+            String testCaseExternalId, Integer versionNumber,
+            Integer testProjectId, String customFieldName, String customFieldValue) {
+        try {
+            Map<String, Object> executionData = new HashMap<String, Object>();
+            executionData.put(TestLinkParams.TEST_CASE_EXTERNAL_ID.toString(),
+                testCaseExternalId);
+            executionData.put(TestLinkParams.VERSION.toString(), versionNumber);
+            executionData.put(TestLinkParams.TEST_PROJECT_ID.toString(),
+                testProjectId);
+            executionData.put(TestLinkParams.CUSTOM_FIELD_NAME.toString(),
+                customFieldName);
+            executionData.put(TestLinkParams.CUSTOM_FIELD_VALUE.toString(),
+                    customFieldValue);
+
+            this.executeXmlRpcCall(
+                TestLinkMethods.CREATE_TEST_CASE_CUSTOM_FIELD_DESIGN_VALUE
+                    .toString(), executionData);
+
+        } catch (XmlRpcException xmlrpcex) {
+            throw new TestLinkAPIException("Error setting custom field "
+                    + customFieldName + " value [" + customFieldValue + "] for "
+                    + "test case " + testCaseExternalId + ": "
+                    + xmlrpcex.getMessage(), xmlrpcex);
+        }
     }
     
     /**

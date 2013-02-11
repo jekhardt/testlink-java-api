@@ -53,6 +53,7 @@ public enum TestLinkParams {
     CHECK_DUPLICATED_NAME("checkduplicatedname"), 
     CONTENT("content"), 
     CUSTOM_FIELD_NAME("customfieldname"),
+    CUSTOM_FIELD_VALUE("customfieldvalue"),
     CUSTOM_FIELDS("customfields"), 
     DEEP("deep"), 
     DESCRIPTION("description"), 
@@ -112,9 +113,10 @@ public enum TestLinkParams {
     TEST_SUITE_ID("testsuiteid"), 
     TEST_SUITE_NAME("testsuitename"), 
     TITLE("title"), 
+    UPDATER_LOGIN("updaterlogin"),
     URGENCY("urgency"), 
     USER("user"), 
-    VERSION("version")
+    VERSION("version") 
     ;
     
     private String value;
