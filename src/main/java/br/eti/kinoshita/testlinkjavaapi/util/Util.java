@@ -2,17 +2,17 @@
  * The MIT License
  *
  * Copyright (c) <2010> <Bruno P. Kinoshita>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,6 @@ package br.eti.kinoshita.testlinkjavaapi.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 
 import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionStatus;
 import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
+import br.eti.kinoshita.testlinkjavaapi.constants.TestImportance;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkParams;
 import br.eti.kinoshita.testlinkjavaapi.constants.TestLinkResponseParams;
 import br.eti.kinoshita.testlinkjavaapi.model.Attachment;
@@ -51,13 +51,13 @@ import br.eti.kinoshita.testlinkjavaapi.model.TestProject;
 import br.eti.kinoshita.testlinkjavaapi.model.TestSuite;
 
 /**
- * 
+ *
  * <p>
  * Utility class with methods to handle the response or prepare the request to
  * the PHP XML-RPC API. This class is able to convert from a Map to an Object
  * and vice-versa.
  * </p>
- * 
+ *
  * <p>
  * <ul>
  * <li>20101129 - BUGID: 3122394 - kinow - Invalid type when passing
@@ -65,7 +65,7 @@ import br.eti.kinoshita.testlinkjavaapi.model.TestSuite;
  * <li>20101130 - BUGID: 3123764 - kinow - reportTCresult not returning
  * execution data</li>
  * </p>
- * 
+ *
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 1.9.0-1
  */
@@ -110,7 +110,7 @@ public final class Util {
 
     /**
      * Extracts a Test Project from a Map.
-     * 
+     *
      * @param map
      *            Map with properties of a Test Project.
      * @return Test Project.
@@ -330,7 +330,7 @@ public final class Util {
     }
 
     /**
-     * 
+     *
      * @param testCaseSteps
      * @return A list whit one Map for each TestCaseStep
      * @since 1.9.4-1
@@ -346,20 +346,18 @@ public final class Util {
 	     */
 
 	    // Why uses an iterator over a foreach?
-	    for (Iterator<TestCaseStep> iterator = testCaseSteps.iterator(); iterator
-		    .hasNext();) {
-		TestCaseStep testCaseStep = iterator.next();
-		Map<String, Object> testCaseStepMap = getTestCaseStepMap(
-			testCaseStep, true);
-		steps.add(testCaseStepMap);
-	    }
+	    for (TestCaseStep testCaseStep : testCaseSteps) {
+	        Map<String, Object> testCaseStepMap = getTestCaseStepMap(
+	                testCaseStep, true);
+	        steps.add(testCaseStepMap);
+        }
 	}
 
 	return steps;
     }
 
     /**
-     * 
+     *
      * @param testCaseSteps
      * @return A list with the step's id
      * @since 1.9.4-1
@@ -374,10 +372,8 @@ public final class Util {
 	     */
 
 	    // Why uses an iterator over a foreach?
-	    for (Iterator<TestCaseStep> iterator = testCaseSteps.iterator(); iterator
-		    .hasNext();) {
-		TestCaseStep testCaseStep = iterator.next();
-		steps.add(testCaseStep.getNumber());
+	    for (TestCaseStep testCaseStep : testCaseSteps) {
+	        steps.add(testCaseStep.getNumber());
 	    }
 	}
 
@@ -420,7 +416,7 @@ public final class Util {
     }
 
     /**
-     * 
+     *
      * @param testCaseStep
      * @return Map of Test Case Step.
      */
@@ -556,16 +552,26 @@ public final class Util {
 		    //
 		    // In 'getTestCase' -> 'full_tc_external_id'
 		    // In 'getTestCasesForTestSuite' -> 'external_id'
-		    // In 'getTestCasesForTestPlan' does not come (ToDo: add)
+            // In 'getTestCasesForTestPlan' -> 'full_external_id'
 		    String fullExternalId = getString(map,
-			    TestLinkResponseParams.FULE__TEST_CASE_EXTERNAL_ID
-				    .toString());
-		    if (fullExternalId == null) {
-			fullExternalId = getString(map,
-				TestLinkResponseParams.EXTERNAL_ID.toString());
-		    }
+		    TestLinkResponseParams.FULL_TEST_CASE_EXTERNAL_ID
+			    .toString());
+            if (fullExternalId == null) {
+                fullExternalId = getString(map,
+                        TestLinkResponseParams.FULL_EXTERNAL_ID
+                                .toString());
+            }
+            if (fullExternalId == null) {
+                fullExternalId = getString(map,
+                        TestLinkResponseParams.EXTERNAL_ID.toString());
+            }
 		    testCase.setFullExternalId(fullExternalId);
 
+			Integer testImportanceValue = getInteger(map,
+				TestLinkResponseParams.IMPORTANCE.toString());
+			TestImportance importance = TestImportance
+				.getTestImportance(testImportanceValue);
+			testCase.setTestImportance(importance);
 		    Integer executionTypeValue = getInteger(map,
 			    TestLinkResponseParams.EXECUTION_TYPE.toString());
 		    ExecutionType execution = ExecutionType
@@ -597,7 +603,7 @@ public final class Util {
 		    // testCase.getCustomFields().add( customField );
 		    // }
 		    // }
-		    Object[] stepsArray = (Object[]) getArray(map,
+		    Object[] stepsArray = getArray(map,
 			    TestLinkResponseParams.STEPS.toString());
 		    if (stepsArray != null && stepsArray.length > 0) {
 			for (Object stepObject : stepsArray) {
@@ -628,7 +634,7 @@ public final class Util {
     }
 
     /**
-     * 
+     *
      * @param object
      * @return Array of objects
      */
@@ -647,7 +653,7 @@ public final class Util {
     }
 
     /**
-     * 
+     *
      * @param object
      * @return Map of objects
      */
@@ -896,17 +902,15 @@ public final class Util {
 	List<Map<String, Object>> requirementsGroupedByReqSpecMap = new ArrayList<Map<String, Object>>();
 
 	Map<Integer, List<Integer>> tempMap = new HashMap<Integer, List<Integer>>();
-	for (Iterator<Requirement> iterator = requirements.iterator(); iterator
-		.hasNext();) {
-	    Requirement requirement = iterator.next();
-	    List<Integer> requirementsArray = tempMap.get(requirement
-		    .getReqSpecId());
-	    if (requirementsArray == null) {
-		requirementsArray = new ArrayList<Integer>();
-	    }
-	    requirementsArray.add(requirement.getId());
-	    tempMap.put(requirement.getReqSpecId(), requirementsArray);
-	}
+	for (Requirement requirement : requirements) {
+    List<Integer> requirementsArray = tempMap.get(requirement
+        .getReqSpecId());
+    if (requirementsArray == null) {
+    requirementsArray = new ArrayList<Integer>();
+    }
+    requirementsArray.add(requirement.getId());
+    tempMap.put(requirement.getReqSpecId(), requirementsArray);
+}
 
 	Set<Entry<Integer, List<Integer>>> entrySet = tempMap.entrySet();
 
@@ -1089,7 +1093,7 @@ public final class Util {
 
     /**
      * Puts a boolean value into a map if the value is not null.
-     * 
+     *
      * @param map
      *            Map.
      * @param key

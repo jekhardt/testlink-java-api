@@ -2,17 +2,17 @@
  * The MIT License
  *
  * Copyright (c) <2010> <Bruno P. Kinoshita>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -65,14 +65,14 @@ import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
  * <p>
  * TestLink API class.
  * </p>
- * 
+ *
  * <p>
  * <ul>
  * <li>20101130 - BUGID: 3123764 - kinow - reportTCresult not returning
  * execution data</li>
  * </ul>
  * </p>
- * 
+ *
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 1.9.0-1
  */
@@ -98,7 +98,7 @@ public class TestLinkAPI {
     private final ReqSpecService reqSpecService;
 
     private static final Logger LOG = LoggerFactory
-	    .getLogger(TestLinkAPI.class);
+            .getLogger(TestLinkAPI.class);
 
     /**
      * XML-RPC client.
@@ -122,12 +122,12 @@ public class TestLinkAPI {
      * <p>
      * Constructor with parameters.
      * </p>
-     * 
+     *
      * <p>
      * Instantiates TestLink services. It also checks the devKey and throws a
      * TestLinkAPIException if it is invalid.
      * </p>
-     * 
+     *
      * @param url
      *            The URL to set.
      * @param devKey
@@ -136,54 +136,54 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public TestLinkAPI(URL url, String devKey) throws TestLinkAPIException {
-	this.url = url;
-	this.devKey = devKey;
+        this.url = url;
+        this.devKey = devKey;
 
-	this.xmlRpcClient = new XmlRpcClient();
+        this.xmlRpcClient = new XmlRpcClient();
 
-	// application configuration
-	final CompositeConfiguration appConfig = this
-		.createApplicationConfiguration();
-	// XML-RPC client specific configuration, using the application
-	// configuration
-	final XmlRpcClientConfigImpl config = this
-		.createXmlRpcClientConfiguration(url, appConfig);
-	this.xmlRpcClient.setConfig(config);
+        // application configuration
+        final CompositeConfiguration appConfig = this
+                .createApplicationConfiguration();
+        // XML-RPC client specific configuration, using the application
+        // configuration
+        final XmlRpcClientConfigImpl config = this
+                .createXmlRpcClientConfiguration(url, appConfig);
+        this.xmlRpcClient.setConfig(config);
 
-	this.testProjectService = new TestProjectService(xmlRpcClient, devKey);
-	this.testPlanService = new TestPlanService(xmlRpcClient, devKey);
-	this.miscService = new MiscService(xmlRpcClient, devKey);
-	this.testCaseService = new TestCaseService(xmlRpcClient, devKey);
-	this.testSuiteService = new TestSuiteService(xmlRpcClient, devKey);
-	this.buildService = new BuildService(xmlRpcClient, devKey);
-	this.requirementService = new RequirementService(xmlRpcClient, devKey);
-	this.reqSpecService = new ReqSpecService(xmlRpcClient, devKey);
+        this.testProjectService = new TestProjectService(xmlRpcClient, devKey);
+        this.testPlanService = new TestPlanService(xmlRpcClient, devKey);
+        this.miscService = new MiscService(xmlRpcClient, devKey);
+        this.testCaseService = new TestCaseService(xmlRpcClient, devKey);
+        this.testSuiteService = new TestSuiteService(xmlRpcClient, devKey);
+        this.buildService = new BuildService(xmlRpcClient, devKey);
+        this.requirementService = new RequirementService(xmlRpcClient, devKey);
+        this.reqSpecService = new ReqSpecService(xmlRpcClient, devKey);
 
-	this.miscService.checkDevKey(devKey);
+        this.miscService.checkDevKey(devKey);
     }
 
     /**
      * Creates application composite configuration.
-     * 
+     *
      * @return Application composite configuration.
      */
     private CompositeConfiguration createApplicationConfiguration() {
-	CompositeConfiguration appConfig = new CompositeConfiguration();
-	appConfig.addConfiguration(new SystemConfiguration());
-	try {
-	    appConfig.addConfiguration(new PropertiesConfiguration(
-		    "testlinkjavaapi.properties"));
-	} catch (ConfigurationException ce) {
-	    this.debug(ce);
-	}
-	return appConfig;
+        CompositeConfiguration appConfig = new CompositeConfiguration();
+        appConfig.addConfiguration(new SystemConfiguration());
+        try {
+            appConfig.addConfiguration(new PropertiesConfiguration(
+                    "testlinkjavaapi.properties"));
+        } catch (ConfigurationException ce) {
+            this.debug(ce);
+        }
+        return appConfig;
     }
 
     /**
      * Creates XML-RPC client configuration.
-     * 
+     *
      * By default enabled for extensions is always true.
-     * 
+     *
      * @param url
      *            Application URL.
      * @param appConfig
@@ -191,99 +191,99 @@ public class TestLinkAPI {
      * @return XML-RPC client configuration.
      */
     private XmlRpcClientConfigImpl createXmlRpcClientConfiguration(URL url,
-	    CompositeConfiguration appConfig) {
-	final XmlRpcClientConfigImpl xmlRpcClientConfig = new XmlRpcClientConfigImpl();
+            CompositeConfiguration appConfig) {
+        final XmlRpcClientConfigImpl xmlRpcClientConfig = new XmlRpcClientConfigImpl();
 
-	xmlRpcClientConfig.setServerURL(url);
-	xmlRpcClientConfig.setEnabledForExtensions(true);
+        xmlRpcClientConfig.setServerURL(url);
+        xmlRpcClientConfig.setEnabledForExtensions(true);
 
-	xmlRpcClientConfig.setBasicEncoding(appConfig
-		.getString(XMLRPC_BASIC_ENCODING));
-	xmlRpcClientConfig.setBasicPassword(appConfig
-		.getString(XMLRPC_BASIC_PASSWORD));
-	xmlRpcClientConfig.setBasicUserName(appConfig
-		.getString(XMLRPC_BASIC_USERNAME));
+        xmlRpcClientConfig.setBasicEncoding(appConfig
+                .getString(XMLRPC_BASIC_ENCODING));
+        xmlRpcClientConfig.setBasicPassword(appConfig
+                .getString(XMLRPC_BASIC_PASSWORD));
+        xmlRpcClientConfig.setBasicUserName(appConfig
+                .getString(XMLRPC_BASIC_USERNAME));
 
-	try {
-	    xmlRpcClientConfig.setConnectionTimeout(appConfig
-		    .getInt(XMLRPC_CONNECTION_TIMEOUT));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setConnectionTimeout(appConfig
+                    .getInt(XMLRPC_CONNECTION_TIMEOUT));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	try {
-	    xmlRpcClientConfig.setContentLengthOptional(appConfig
-		    .getBoolean(XMLRPC_CONTENT_LENGTH_OPTIONAL));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setContentLengthOptional(appConfig
+                    .getBoolean(XMLRPC_CONTENT_LENGTH_OPTIONAL));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	try {
-	    xmlRpcClientConfig.setEnabledForExceptions(appConfig
-		    .getBoolean(XMLRPC_ENABLED_FOR_EXCEPTIONS));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setEnabledForExceptions(appConfig
+                    .getBoolean(XMLRPC_ENABLED_FOR_EXCEPTIONS));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	xmlRpcClientConfig.setEncoding(appConfig.getString(XMLRPC_ENCODING));
+        xmlRpcClientConfig.setEncoding(appConfig.getString(XMLRPC_ENCODING));
 
-	try {
-	    xmlRpcClientConfig.setGzipCompressing(appConfig
-		    .getBoolean(XMLRPC_GZIP_COMPRESSION));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setGzipCompressing(appConfig
+                    .getBoolean(XMLRPC_GZIP_COMPRESSION));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	try {
-	    xmlRpcClientConfig.setGzipRequesting(appConfig
-		    .getBoolean(XMLRPC_GZIP_REQUESTING));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setGzipRequesting(appConfig
+                    .getBoolean(XMLRPC_GZIP_REQUESTING));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	try {
-	    xmlRpcClientConfig.setReplyTimeout(appConfig
-		    .getInt(XMLRPC_REPLY_TIMEOUT));
-	} catch (ConversionException ce) {
-	    this.debug(ce);
-	} catch (NoSuchElementException nsee) {
-	    this.debug(nsee);
-	}
+        try {
+            xmlRpcClientConfig.setReplyTimeout(appConfig
+                    .getInt(XMLRPC_REPLY_TIMEOUT));
+        } catch (ConversionException ce) {
+            this.debug(ce);
+        } catch (NoSuchElementException nsee) {
+            this.debug(nsee);
+        }
 
-	xmlRpcClientConfig.setUserAgent(appConfig.getString(XMLRPC_USER_AGENT));
+        xmlRpcClientConfig.setUserAgent(appConfig.getString(XMLRPC_USER_AGENT));
 
-	return xmlRpcClientConfig;
+        return xmlRpcClientConfig;
     }
 
     /**
      * Logs a throwable object in debug level. Before outputting the message it
      * checks if debug is enabled or not. If it is not enabled the message is
      * not displayed and the String object is not created/concatenated, etc.
-     * 
+     *
      * @param throwable
      *            Throwable object.
      */
     private void debug(Throwable throwable) {
-	if (LOG.isDebugEnabled()) {
-	    LOG.debug(throwable.getMessage(), throwable);
-	}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(throwable.getMessage(), throwable);
+        }
     }
 
     /**
      * @return XML-RPC Client.
      */
     public XmlRpcClient getXmlRpcClient() {
-	return this.xmlRpcClient;
+        return this.xmlRpcClient;
     }
 
     /* ------- Utility methods ------- */
@@ -292,24 +292,24 @@ public class TestLinkAPI {
      * @return the url
      */
     public URL getUrl() {
-	return url;
+        return url;
     }
 
     /**
      * @return the devKey
      */
     public String getDevKey() {
-	return devKey;
+        return devKey;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-	return "TestLinkAPI [url=" + url + ", devKey=********]";
+        return "TestLinkAPI [url=" + url + ", devKey=********]";
     }
 
     /* ------- TL API methods ------- */
@@ -318,7 +318,7 @@ public class TestLinkAPI {
 
     /**
      * Checks developer key.
-     * 
+     *
      * @param devKey
      *            Developer Key.
      * @return <code>true</code> if devKey is valid, <code>false</code>
@@ -327,74 +327,74 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public Boolean checkDevKey(String devKey) throws TestLinkAPIException {
-	return this.miscService.checkDevKey(devKey);
+        return this.miscService.checkDevKey(devKey);
     }
 
     /**
      * Checks if the given user exists.
-     * 
+     *
      * @param user
      * @return <code>true</code> if the user exists, <code>false</code>
      *         otherwise.
      * @throws TestLinkAPIException
      */
     public Boolean doesUserExist(String user) throws TestLinkAPIException {
-	return this.miscService.doesUserExist(user);
+        return this.miscService.doesUserExist(user);
     }
 
     /**
      * ping method is an alias for sayHello.
-     * 
+     *
      * @return Hello message.
      * @throws TestLinkAPIException
      */
     public String ping() throws TestLinkAPIException {
-	return this.sayHello();
+        return this.sayHello();
     }
 
     /**
      * Says hello to the user.
-     * 
+     *
      * @return Hello message.
      * @throws TestLinkAPIException
      */
     public String sayHello() throws TestLinkAPIException {
-	return this.miscService.sayHello();
+        return this.miscService.sayHello();
     }
 
     /**
      * Displays information about TL.
-     * 
+     *
      * @return About text.
      * @throws TestLinkAPIException
      */
     public String about() throws TestLinkAPIException {
-	return this.miscService.about();
+        return this.miscService.about();
     }
 
     /**
-     * 
+     *
      * @param testMode
      * @return Test mode.
      * @throws TestLinkAPIException
      */
     public Boolean setTestMode(Boolean testMode) throws TestLinkAPIException {
-	return this.miscService.setTestMode(testMode);
+        return this.miscService.setTestMode(testMode);
     }
 
     /**
-     * 
+     *
      * @param str
      * @return String repeated.
      * @throws TestLinkAPIException
      */
     public String repeat(String str) throws TestLinkAPIException {
-	return this.miscService.repeat(str);
+        return this.miscService.repeat(str);
     }
 
     /**
      * Uploads an attachment linking it to a DB table.
-     * 
+     *
      * @param fkId
      * @param fkTable
      * @param title
@@ -406,28 +406,28 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadAttachment(Integer fkId, String fkTable,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.miscService.uploadAttachment(fkId, fkTable, title,
-		description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.miscService.uploadAttachment(fkId, fkTable, title,
+                description, fileName, fileType, content);
     }
 
     /**
      * Retrieves the full path of a node. Given a nodeId of, let's say, 10, that
      * is a test case. The return array will consist of Name Of Project, Name of
      * Suite, Name of Test Case.
-     * 
+     *
      * @param nodeId
      * @return Array of name of nodes
      * @throws TestLinkAPIException
      */
     public String[] getFullPath(Integer nodeId) throws TestLinkAPIException {
-	return this.miscService.getFullPath(nodeId);
+        return this.miscService.getFullPath(nodeId);
     }
 
     /**
      * Retrieves last execution result of a Test Case.
-     * 
+     *
      * @param testPlanId
      * @param testCaseId
      * @param testCaseExternalId
@@ -435,18 +435,18 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Execution getLastExecutionResult(Integer testPlanId,
-	    Integer testCaseId, Integer testCaseExternalId
+            Integer testCaseId, Integer testCaseExternalId
 
     ) throws TestLinkAPIException {
-	return this.miscService.getLastExecutionResult(testPlanId, testCaseId,
-		testCaseExternalId);
+        return this.miscService.getLastExecutionResult(testPlanId, testCaseId,
+                testCaseExternalId);
     }
 
     /* XX Test Project operations XX */
 
     /**
      * Creates a Test Project.
-     * 
+     *
      * @param testProjectName
      * @param testProjectPrefix
      * @param notes
@@ -461,19 +461,19 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public TestProject createTestProject(String testProjectName,
-	    String testProjectPrefix, String notes, Boolean enableRequirements,
-	    Boolean enableTestPriority, Boolean enableAutomation,
-	    Boolean enableInventory, Boolean isActive, Boolean isPublic)
-	    throws TestLinkAPIException {
-	return this.testProjectService.createTestProject(testProjectName,
-		testProjectPrefix, notes, enableRequirements,
-		enableTestPriority, enableAutomation, enableInventory,
-		isActive, isPublic);
+            String testProjectPrefix, String notes, Boolean enableRequirements,
+            Boolean enableTestPriority, Boolean enableAutomation,
+            Boolean enableInventory, Boolean isActive, Boolean isPublic)
+            throws TestLinkAPIException {
+        return this.testProjectService.createTestProject(testProjectName,
+                testProjectPrefix, notes, enableRequirements,
+                enableTestPriority, enableAutomation, enableInventory,
+                isActive, isPublic);
     }
 
     /**
      * Retrieves a Test Project by its name.
-     * 
+     *
      * @param projectName
      *            Test Project name.
      * @return Test Project with given name or null if not found.
@@ -481,37 +481,37 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public TestProject getTestProjectByName(String projectName)
-	    throws TestLinkAPIException {
-	return this.testProjectService.getTestProjectByName(projectName);
+            throws TestLinkAPIException {
+        return this.testProjectService.getTestProjectByName(projectName);
     }
 
     /**
      * Retrieves all Test Projects from TestLink.
-     * 
+     *
      * @return an array of Test Projects.
      * @throws TestLinkAPIException
      * @since 1.0
      */
     public TestProject[] getProjects() throws TestLinkAPIException {
-	return this.testProjectService.getProjects();
+        return this.testProjectService.getProjects();
     }
 
     /**
      * Retrieves an array of Test Plans associated to a Test Project.
-     * 
+     *
      * @param projectId
      *            Test Project Id.
      * @return Array of Test Plans.
      * @throws TestLinkAPIException
      */
     public TestPlan[] getProjectTestPlans(Integer projectId)
-	    throws TestLinkAPIException {
-	return this.testProjectService.getProjectTestPlans(projectId);
+            throws TestLinkAPIException {
+        return this.testProjectService.getProjectTestPlans(projectId);
     }
 
     /**
      * Uploads an attachment to a Test Project.
-     * 
+     *
      * @param testProjectId
      * @param title
      * @param description
@@ -522,17 +522,17 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadTestProjectAttachment(Integer testProjectId,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.testProjectService.uploadTestProjectAttachment(
-		testProjectId, title, description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.testProjectService.uploadTestProjectAttachment(
+                testProjectId, title, description, fileName, fileType, content);
     }
 
     /* XX Test Plan operations XX */
 
     /**
      * Creates a Test Plan.
-     * 
+     *
      * @param planName
      *            Test Plan name.
      * @param projectName
@@ -545,15 +545,15 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public TestPlan createTestPlan(String planName, String projectName,
-	    String notes, Boolean isActive, Boolean isPublic)
-	    throws TestLinkAPIException {
-	return this.testPlanService.createTestPlan(planName, projectName,
-		notes, isActive, isPublic);
+            String notes, Boolean isActive, Boolean isPublic)
+            throws TestLinkAPIException {
+        return this.testPlanService.createTestPlan(planName, projectName,
+                notes, isActive, isPublic);
     }
 
     /**
      * Retrieves a Test Plan by its name.
-     * 
+     *
      * @param planName
      *            Test Plan name.
      * @param projectName
@@ -563,33 +563,33 @@ public class TestLinkAPI {
      * @since 1.0
      */
     public TestPlan getTestPlanByName(String planName, String projectName)
-	    throws TestLinkAPIException {
-	return this.testPlanService.getTestPlanByName(planName, projectName);
+            throws TestLinkAPIException {
+        return this.testPlanService.getTestPlanByName(planName, projectName);
     }
 
     /**
      * Retrieves Platforms of a Test Plan.
-     * 
+     *
      * @param planId
      *            Test Plan Id.
      * @return Platforms.
      * @throws TestLinkAPIException
      */
     public Platform[] getTestPlanPlatforms(Integer planId)
-	    throws TestLinkAPIException {
-	return this.testPlanService.getTestPlanPlatforms(planId);
+            throws TestLinkAPIException {
+        return this.testPlanService.getTestPlanPlatforms(planId);
     }
 
     public Map<String, Object> getTotalsForTestPlan(Integer testPlanId)
-	    throws TestLinkAPIException {
-	return this.testPlanService.getTotalsForTestPlan(testPlanId);
+            throws TestLinkAPIException {
+        return this.testPlanService.getTotalsForTestPlan(testPlanId);
     }
 
     /* XX Build operations XX */
 
     /**
      * Creates a Build.
-     * 
+     *
      * @param testPlanId
      * @param buildName
      * @param buildNotes
@@ -597,63 +597,63 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Build createBuild(Integer testPlanId, String buildName,
-	    String buildNotes) throws TestLinkAPIException {
-	return this.buildService.createBuild(testPlanId, buildName, buildNotes);
+            String buildNotes) throws TestLinkAPIException {
+        return this.buildService.createBuild(testPlanId, buildName, buildNotes);
     }
 
     /**
      * Retrieves an Array of Builds for a given Test Plan.
-     * 
+     *
      * @param testPlanId
      *            Test Plan ID.
      * @return Array of Builds.
      * @throws TestLinkAPIException
      */
     public Build[] getBuildsForTestPlan(Integer testPlanId)
-	    throws TestLinkAPIException {
-	return this.buildService.getBuildsForTestPlan(testPlanId);
+            throws TestLinkAPIException {
+        return this.buildService.getBuildsForTestPlan(testPlanId);
     }
 
     /**
      * Retrieves the latest Build for a given Test Plan.
-     * 
+     *
      * @param testPlanId
      *            Test Plan ID.
      * @return Build.
      * @throws TestLinkAPIException
      */
     public Build getLatestBuildForTestPlan(Integer testPlanId)
-	    throws TestLinkAPIException {
-	return this.buildService.getLatestBuildForTestPlan(testPlanId);
+            throws TestLinkAPIException {
+        return this.buildService.getLatestBuildForTestPlan(testPlanId);
     }
 
     /* XX Test Suite operations XX */
 
     public TestSuite createTestSuite(Integer testProjectId, String name,
-	    String details, Integer parentId, Integer order,
-	    Boolean checkDuplicatedName, ActionOnDuplicate actionOnDuplicatedName)
-	    throws TestLinkAPIException {
-	return this.testSuiteService.createTestSuite(testProjectId, name,
-		details, parentId, order, checkDuplicatedName,
-		actionOnDuplicatedName);
+            String details, Integer parentId, Integer order,
+            Boolean checkDuplicatedName, ActionOnDuplicate actionOnDuplicatedName)
+            throws TestLinkAPIException {
+        return this.testSuiteService.createTestSuite(testProjectId, name,
+                details, parentId, order, checkDuplicatedName,
+                actionOnDuplicatedName);
     }
 
     /**
      * Retrieves Test Suites for given Ids.
-     * 
+     *
      * @param testSuiteIds
      *            List of Test Suite Ids.
      * @return Array of Test Suites.
      * @throws TestLinkAPIException
      */
     public TestSuite[] getTestSuiteByID(List<Integer> testSuiteIds)
-	    throws TestLinkAPIException {
-	return this.testSuiteService.getTestSuiteByID(testSuiteIds);
+            throws TestLinkAPIException {
+        return this.testSuiteService.getTestSuiteByID(testSuiteIds);
     }
 
     /**
      * Uploads an attachment to a Test Suite.
-     * 
+     *
      * @param testSuiteId
      * @param title
      * @param description
@@ -664,51 +664,51 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadTestSuiteAttachment(Integer testSuiteId,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.testSuiteService.uploadTestSuiteAttachment(testSuiteId,
-		title, description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.testSuiteService.uploadTestSuiteAttachment(testSuiteId,
+                title, description, fileName, fileType, content);
     }
 
     /**
-     * 
+     *
      * @param testPlanId
      * @return Array of Test Suites of Test Plan.
      * @throws TestLinkAPIException
      */
     public TestSuite[] getTestSuitesForTestPlan(Integer testPlanId)
-	    throws TestLinkAPIException {
-	return this.testSuiteService.getTestSuitesForTestPlan(testPlanId);
+            throws TestLinkAPIException {
+        return this.testSuiteService.getTestSuitesForTestPlan(testPlanId);
     }
 
     /**
      * Get list of TestSuites which are DIRECT children of a given TestSuite
-     * 
+     *
      * @param testSuiteId
      * @throws TestLinkAPIException
      */
     public TestSuite[] getTestSuitesForTestSuite(Integer testSuiteId)
-	    throws TestLinkAPIException {
-	return this.testSuiteService.getTestSuitesForTestSuite(testSuiteId);
+            throws TestLinkAPIException {
+        return this.testSuiteService.getTestSuitesForTestSuite(testSuiteId);
     }
 
     /**
      * Get set of test suites AT TOP LEVEL of tree on a Test Project
-     * 
+     *
      * @param testProjectId
      * @throws TestLinkAPIException
      */
     public TestSuite[] getFirstLevelTestSuitesForTestProject(
-	    Integer testProjectId) throws TestLinkAPIException {
-	return this.testSuiteService
-		.getFirstLevelTestSuitesForTestProject(testProjectId);
+            Integer testProjectId) throws TestLinkAPIException {
+        return this.testSuiteService
+                .getFirstLevelTestSuitesForTestProject(testProjectId);
     }
 
     /* XX Test Case operations XX */
 
     /**
      * Creates a Test Case.
-     * 
+     *
      * @param testCaseName
      * @param testSuiteId
      * @param testProjectId
@@ -726,15 +726,15 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public TestCase createTestCase(String testCaseName, Integer testSuiteId,
-	    Integer testProjectId, String authorLogin, String summary,
-	    List<TestCaseStep> steps, String preconditions,
-	    TestImportance importance, ExecutionType execution, Integer order,
-	    Integer internalId, Boolean checkDuplicatedName,
-	    ActionOnDuplicate actionOnDuplicatedName) throws TestLinkAPIException {
-	return this.testCaseService.createTestCase(testCaseName, testSuiteId,
-		testProjectId, authorLogin, summary, steps, preconditions,
-		importance, execution, order, internalId, checkDuplicatedName,
-		actionOnDuplicatedName);
+            Integer testProjectId, String authorLogin, String summary,
+            List<TestCaseStep> steps, String preconditions,
+            TestImportance importance, ExecutionType execution, Integer order,
+            Integer internalId, Boolean checkDuplicatedName,
+            ActionOnDuplicate actionOnDuplicatedName) throws TestLinkAPIException {
+        return this.testCaseService.createTestCase(testCaseName, testSuiteId,
+                testProjectId, authorLogin, summary, steps, preconditions,
+                importance, execution, order, internalId, checkDuplicatedName,
+                actionOnDuplicatedName);
     }
 
     /**
@@ -746,38 +746,42 @@ public class TestLinkAPI {
      * @param summary
      * @param preconditions
      * @param importance
+     * @param updater
      * @param executionType
+     * @param order
      * @param status
      * @param estimatedExecutionDuration
      * @throws TestLinkAPIException
      */
     public void updateTestCase(String testCaseFullExternalId, String version,
-	    String name, String summary, String preconditions,
-	    TestImportance importance, ExecutionType executionType,
-	    TestCaseStatus status, String estimatedExecutionDuration)
-	    throws TestLinkAPIException {
-	this.testCaseService.updateTestCase(testCaseFullExternalId, version,
-		name, summary, preconditions, importance, executionType,
-		status, estimatedExecutionDuration);
+            String name, String summary, String preconditions,
+            TestImportance importance, String updater,
+            ExecutionType executionType, Integer order, TestCaseStatus status,
+            String estimatedExecutionDuration) throws TestLinkAPIException {
+        this.testCaseService.updateTestCase(testCaseFullExternalId, version,
+                name, summary, preconditions, importance, updater,
+                executionType, order, status, estimatedExecutionDuration);
     }
 
     public void updateTestCase(TestCase testCase) throws TestLinkAPIException {
-	this.testCaseService.updateTestCase(testCase.getFullExternalId(), // testCaseFullExternalId,
-		testCase.getVersion() != null ? testCase.getVersion()
-			.toString() : null, // version,
-		testCase.getName(), // name,
-		testCase.getSummary(), // summary,
-		testCase.getPreconditions(), // preconditions,
-		null, // importance,
-		testCase.getExecutionType(), // executionType,
-		null, // status,
-		null // estimatedExecutionDuration
-		);
+        this.testCaseService.updateTestCase(testCase.getFullExternalId(), // testCaseFullExternalId,
+                testCase.getVersion() != null ? testCase.getVersion()
+                        .toString() : null, // version,
+                testCase.getName(), // name,
+                testCase.getSummary(), // summary,
+                testCase.getPreconditions(), // preconditions,
+                testCase.getTestImportance(), // importance,
+                testCase.getAuthorLogin(), // updater
+                testCase.getExecutionType(), // executionType,
+                testCase.getOrder(),
+                null, // status,
+                null // estimatedExecutionDuration
+                );
     }
 
     /**
      * Create, Update or Push a list of TestCaseSteps in a Test Case.
-     * 
+     *
      * @param testCaseExternalId
      * @param version
      * @param testCaseSteps
@@ -785,16 +789,16 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Map<String, Object> createTestCaseSteps(String testCaseExternalId,
-	    Integer version, TestCaseStepAction action,
-	    List<TestCaseStep> testCaseSteps) throws TestLinkAPIException {
-	return this.testCaseService.createTestCaseSteps(testCaseExternalId,
-		version, TestCaseStepAction.CREATE, testCaseSteps);
+            Integer version, TestCaseStepAction action,
+            List<TestCaseStep> testCaseSteps) throws TestLinkAPIException {
+        return this.testCaseService.createTestCaseSteps(testCaseExternalId,
+                version, action, testCaseSteps);
     }
 
     /**
      * Add a list of TestCaseSteps in a Test Case. A convenient method to add
      * steps.
-     * 
+     *
      * @param testCaseExternalId
      * @param version
      * @param testCaseSteps
@@ -802,16 +806,16 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Map<String, Object> addTestCaseSteps(String testCaseExternalId,
-	    Integer version, List<TestCaseStep> testCaseSteps)
-	    throws TestLinkAPIException {
-	return createTestCaseSteps(testCaseExternalId, version,
-		TestCaseStepAction.CREATE, testCaseSteps);
+            Integer version, List<TestCaseStep> testCaseSteps)
+            throws TestLinkAPIException {
+        return createTestCaseSteps(testCaseExternalId, version,
+                TestCaseStepAction.CREATE, testCaseSteps);
     }
 
     /**
      * Update (override) a list of TestCaseSteps in a Test Case. A convenient
      * method to update steps.
-     * 
+     *
      * @param testCaseExternalId
      * @param version
      * @param testCaseSteps
@@ -819,16 +823,16 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Map<String, Object> updateTestCaseSteps(String testCaseExternalId,
-	    Integer version, List<TestCaseStep> testCaseSteps)
-	    throws TestLinkAPIException {
-	return createTestCaseSteps(testCaseExternalId, version,
-		TestCaseStepAction.UPDATE, testCaseSteps);
+            Integer version, List<TestCaseStep> testCaseSteps)
+            throws TestLinkAPIException {
+        return createTestCaseSteps(testCaseExternalId, version,
+                TestCaseStepAction.UPDATE, testCaseSteps);
     }
 
     /**
      * Push (insert and move down previous steps) a list of TestCaseSteps in a
      * TestCase. A convenient method to push steps.
-     * 
+     *
      * @param testCaseExternalId
      * @param version
      * @param testCaseSteps
@@ -836,15 +840,15 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Map<String, Object> pushTestCaseSteps(String testCaseExternalId,
-	    Integer version, List<TestCaseStep> testCaseSteps)
-	    throws TestLinkAPIException {
-	return createTestCaseSteps(testCaseExternalId, version,
-		TestCaseStepAction.PUSH, testCaseSteps);
+            Integer version, List<TestCaseStep> testCaseSteps)
+            throws TestLinkAPIException {
+        return createTestCaseSteps(testCaseExternalId, version,
+                TestCaseStepAction.PUSH, testCaseSteps);
     }
 
     /**
      * Delete a list if TestCaseSteps from a Test Case.
-     * 
+     *
      * @param testCaseExternalId
      * @param version
      * @param testCaseSteps
@@ -852,15 +856,15 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Map<String, Object> deleteTestCaseSteps(String testCaseExternalId,
-	    Integer version, List<TestCaseStep> testCaseSteps)
-	    throws TestLinkAPIException {
-	return this.testCaseService.deleteTestCaseSteps(testCaseExternalId,
-		version, testCaseSteps);
+            Integer version, List<TestCaseStep> testCaseSteps)
+            throws TestLinkAPIException {
+        return this.testCaseService.deleteTestCaseSteps(testCaseExternalId,
+                version, testCaseSteps);
     }
 
     /**
      * Adds a Test Case to a Test Plan.
-     * 
+     *
      * @param testProjectId
      * @param testPlanId
      * @param testCaseId
@@ -872,16 +876,16 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Integer addTestCaseToTestPlan(Integer testProjectId,
-	    Integer testPlanId, Integer testCaseId, Integer version,
-	    Integer platformId, Integer order, Integer urgency)
-	    throws TestLinkAPIException {
-	return this.testCaseService.addTestCaseToTestPlan(testProjectId,
-		testPlanId, testCaseId, version, platformId, order, urgency);
+            Integer testPlanId, Integer testCaseId, Integer version,
+            Integer platformId, Integer order, Integer urgency)
+            throws TestLinkAPIException {
+        return this.testCaseService.addTestCaseToTestPlan(testProjectId,
+                testPlanId, testCaseId, version, platformId, order, urgency);
     }
 
     /**
      * Retrieves Test Cases for a Test Suite.
-     * 
+     *
      * @param testSuiteId
      * @param deep
      * @param detail
@@ -889,14 +893,14 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public TestCase[] getTestCasesForTestSuite(Integer testSuiteId,
-	    Boolean deep, TestCaseDetails detail) throws TestLinkAPIException {
-	return this.testCaseService.getTestCasesForTestSuite(testSuiteId, deep,
-		detail);
+            Boolean deep, TestCaseDetails detail) throws TestLinkAPIException {
+        return this.testCaseService.getTestCasesForTestSuite(testSuiteId, deep,
+                detail);
     }
 
     /**
      * Get a test case
-     * 
+     *
      * @param testCaseId
      * @param testCaseExternalId
      * @param version
@@ -904,15 +908,15 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public TestCase getTestCase(Integer testCaseId, Integer testCaseExternalId,
-	    Integer version) throws TestLinkAPIException {
-	return this.testCaseService.getTestCase(testCaseId, testCaseExternalId,
-		version);
+            Integer version) throws TestLinkAPIException {
+        return this.testCaseService.getTestCase(testCaseId, testCaseExternalId,
+                version);
     }
 
     /**
      * Get a Test Case using the full external id, composed by the prefix and
      * the external id: prefix-externalId
-     * 
+     *
      * @param fullTestCaseExternalId
      *            Full external id: prefix-externalId
      * @param version
@@ -920,14 +924,14 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public TestCase getTestCaseByExternalId(String fullTestCaseExternalId,
-	    Integer version) throws TestLinkAPIException {
-	return this.testCaseService.getTestCaseByExternalId(
-		fullTestCaseExternalId, version);
+            Integer version) throws TestLinkAPIException {
+        return this.testCaseService.getTestCaseByExternalId(
+                fullTestCaseExternalId, version);
     }
 
     /**
      * Retrieves Test Cases for Test Plans.
-     * 
+     *
      * @param testPlanId
      * @param testCasesIds
      * @param buildId
@@ -942,21 +946,21 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public TestCase[] getTestCasesForTestPlan(Integer testPlanId,
-	    List<Integer> testCasesIds, Integer buildId,
-	    List<Integer> keywordsIds,
-	    String keywords, // , separated e.g.: database,performance
-	    Boolean executed, List<Integer> assignedTo,
-	    String executeStatus, // , separated e.g.: p,n,f
-	    ExecutionType executionType, Boolean getStepInfo,
-	    TestCaseDetails detail) throws TestLinkAPIException {
-	return this.testCaseService.getTestCasesForTestPlan(testPlanId,
-		testCasesIds, buildId, keywordsIds, keywords, executed,
-		assignedTo, executeStatus, executionType, getStepInfo, detail);
+            List<Integer> testCasesIds, Integer buildId,
+            List<Integer> keywordsIds,
+            String keywords, // , separated e.g.: database,performance
+            Boolean executed, List<Integer> assignedTo,
+            String executeStatus, // , separated e.g.: p,n,f
+            ExecutionType executionType, Boolean getStepInfo,
+            TestCaseDetails detail) throws TestLinkAPIException {
+        return this.testCaseService.getTestCasesForTestPlan(testPlanId,
+                testCasesIds, buildId, keywordsIds, keywords, executed,
+                assignedTo, executeStatus, executionType, getStepInfo, detail);
     }
 
     /**
      * Get a test case ID by a test case Name
-     * 
+     *
      * @param testCaseName
      * @param testSuiteName
      * @param testProjectName
@@ -965,15 +969,15 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Integer getTestCaseIDByName(String testCaseName,
-	    String testSuiteName, String testProjectName,
-	    String testCasePathName) throws TestLinkAPIException {
-	return this.testCaseService.getTestCaseIDByName(testCaseName,
-		testSuiteName, testProjectName, testCasePathName);
+            String testSuiteName, String testProjectName,
+            String testCasePathName) throws TestLinkAPIException {
+        return this.testCaseService.getTestCaseIDByName(testCaseName,
+                testSuiteName, testProjectName, testCasePathName);
     }
 
     /**
      * Uploads an attachment to a Test Case.
-     * 
+     *
      * @param testCaseId
      * @param title
      * @param description
@@ -984,48 +988,48 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadTestCaseAttachment(Integer testCaseId,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.testCaseService.uploadTestCaseAttachment(testCaseId, title,
-		description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.testCaseService.uploadTestCaseAttachment(testCaseId, title,
+                description, fileName, fileType, content);
     }
 
     /**
      * Return an array of attachments of a Test Case.
-     * 
+     *
      * @param testCaseId
      * @param testCaseExternalId
      * @return Array of Attachments.
      * @throws TestLinkAPIException
      */
     public Attachment[] getTestCaseAttachments(Integer testCaseId,
-	    Integer testCaseExternalId) throws TestLinkAPIException {
-	return this.testCaseService.getTestCaseAttachments(testCaseId,
-		testCaseExternalId);
+            Integer testCaseExternalId) throws TestLinkAPIException {
+        return this.testCaseService.getTestCaseAttachments(testCaseId,
+                testCaseExternalId);
     }
 
     public Attachment uploadExecutionAttachment(Integer executionId,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.testCaseService.uploadExecutionAttachment(executionId,
-		title, description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.testCaseService.uploadExecutionAttachment(executionId,
+                title, description, fileName, fileType, content);
     }
 
     /**
      * Deletes an execution.
-     * 
+     *
      * @param executionId
      *            Execution Id.
      * @throws TestLinkAPIException
      */
     public void deleteExecution(Integer executionId)
-	    throws TestLinkAPIException {
-	this.testCaseService.deleteExecution(executionId);
+            throws TestLinkAPIException {
+        this.testCaseService.deleteExecution(executionId);
     }
 
     /**
      * Reports a Test Case result.
-     * 
+     *
      * @param testCaseId
      * @param testCaseExternalId
      * @param testPlanId
@@ -1042,20 +1046,20 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public ReportTCResultResponse reportTCResult(Integer testCaseId,
-	    Integer testCaseExternalId, Integer testPlanId,
-	    ExecutionStatus status, Integer buildId, String buildName,
-	    String notes, Boolean guess, String bugId, Integer platformId,
-	    String platformName, Map<String, String> customFields,
-	    Boolean overwrite) throws TestLinkAPIException {
-	return this.testCaseService.reportTCResult(testCaseId,
-		testCaseExternalId, testPlanId, status, buildId, buildName,
-		notes, guess, bugId, platformId, platformName, customFields,
-		overwrite);
+            Integer testCaseExternalId, Integer testPlanId,
+            ExecutionStatus status, Integer buildId, String buildName,
+            String notes, Boolean guess, String bugId, Integer platformId,
+            String platformName, Map<String, String> customFields,
+            Boolean overwrite) throws TestLinkAPIException {
+        return this.testCaseService.reportTCResult(testCaseId,
+                testCaseExternalId, testPlanId, status, buildId, buildName,
+                notes, guess, bugId, platformId, platformName, customFields,
+                overwrite);
     }
 
     /**
      * Reports a Test Case result.
-     * 
+     *
      * @param testCaseId
      * @param testCaseExternalId
      * @param testPlanId
@@ -1072,22 +1076,22 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public ReportTCResultResponse setTestCaseExecutionResult(
-	    Integer testCaseId, Integer testCaseExternalId, Integer testPlanId,
-	    ExecutionStatus status, Integer buildId, String buildName,
-	    String notes, Boolean guess, String bugId, Integer platformId,
-	    String platformName, Map<String, String> customFields,
-	    Boolean overwrite) throws TestLinkAPIException {
-	return this.testCaseService.reportTCResult(testCaseId,
-		testCaseExternalId, testPlanId, status, buildId, buildName,
-		notes, guess, bugId, platformId, platformName, customFields,
-		overwrite);
+            Integer testCaseId, Integer testCaseExternalId, Integer testPlanId,
+            ExecutionStatus status, Integer buildId, String buildName,
+            String notes, Boolean guess, String bugId, Integer platformId,
+            String platformName, Map<String, String> customFields,
+            Boolean overwrite) throws TestLinkAPIException {
+        return this.testCaseService.reportTCResult(testCaseId,
+                testCaseExternalId, testPlanId, status, buildId, buildName,
+                notes, guess, bugId, platformId, platformName, customFields,
+                overwrite);
     }
 
     /**
      * Retrieves list of Custom Fields for a Test Case.
-     * 
+     *
      * @param testCaseId
-     * @param testCaseExternalId
+     * @param testCaseFullExternalId
      * @param versionNumber
      * @param testProjectId
      * @param customFieldName
@@ -1095,19 +1099,39 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public CustomField getTestCaseCustomFieldDesignValue(Integer testCaseId,
-	    Integer testCaseExternalId, Integer versionNumber,
-	    Integer testProjectId, String customFieldName,
-	    ResponseDetails details) throws TestLinkAPIException {
-	return this.testCaseService.getTestCaseCustomFieldDesignValue(
-		testCaseId, testCaseExternalId, versionNumber, testProjectId,
-		customFieldName, details);
+            String testCaseFullExternalId, Integer versionNumber,
+            Integer testProjectId, String customFieldName,
+            ResponseDetails details) throws TestLinkAPIException {
+        return this.testCaseService.getTestCaseCustomFieldDesignValue(
+                testCaseId, testCaseFullExternalId, versionNumber, testProjectId,
+                customFieldName, details);
+    }
+
+    /**
+     * Sets list of Custom Fields for a Test Case. Creates if not exists.
+     * Updates if it does.
+     *
+     * @param testCaseExternalId
+     * @param versionNumber
+     * @param testProjectId
+     * @param customFieldName
+     * @param customFieldValue
+     *
+     * @throws TestLinkAPIException
+     */
+    public void createTestCaseCustomFieldDesignValue(String testCaseExternalId,
+            Integer versionNumber, Integer testProjectId,
+            String customFieldName, String customFieldValue) {
+        this.testCaseService.createTestCaseCustomFieldDesignValue(
+                testCaseExternalId, versionNumber, testProjectId,
+                customFieldName, customFieldValue);
     }
 
     /* XX Requirements Specification operations XX */
 
     /**
      * Uploads an attachment to a Requirement Specification.
-     * 
+     *
      * @param reqSpecId
      * @param title
      * @param description
@@ -1118,18 +1142,18 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadRequirementSpecificationAttachment(
-	    Integer reqSpecId, String title, String description,
-	    String fileName, String fileType, String content)
-	    throws TestLinkAPIException {
-	return this.reqSpecService.uploadRequirementSpecificationAttachment(
-		reqSpecId, title, description, fileName, fileType, content);
+            Integer reqSpecId, String title, String description,
+            String fileName, String fileType, String content)
+            throws TestLinkAPIException {
+        return this.reqSpecService.uploadRequirementSpecificationAttachment(
+                reqSpecId, title, description, fileName, fileType, content);
     }
 
     /* XX Requirements operations XX */
 
     /**
      * Uploads an attachment to a Requirement.
-     * 
+     *
      * @param requirementId
      * @param title
      * @param description
@@ -1140,30 +1164,30 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Attachment uploadRequirementAttachment(Integer requirementId,
-	    String title, String description, String fileName, String fileType,
-	    String content) throws TestLinkAPIException {
-	return this.requirementService.uploadRequirementAttachment(
-		requirementId, title, description, fileName, fileType, content);
+            String title, String description, String fileName, String fileType,
+            String content) throws TestLinkAPIException {
+        return this.requirementService.uploadRequirementAttachment(
+                requirementId, title, description, fileName, fileType, content);
     }
 
     /**
      * Assign a requirements to a Test Case.
-     * 
+     *
      * @param testCaseId
      * @param testProjectId
      * @param requirements
      * @throws TestLinkAPIException
      */
     public void assignRequirements(Integer testCaseId, Integer testProjectId,
-	    List<Requirement> requirements) throws TestLinkAPIException {
-	this.requirementService.assignRequirements(testCaseId, testProjectId,
-		requirements);
+            List<Requirement> requirements) throws TestLinkAPIException {
+        this.requirementService.assignRequirements(testCaseId, testProjectId,
+                requirements);
     }
 
     /**
      * Executes a XML-RPC call. Use this method to talk with TestLink in a lower
      * level.
-     * 
+     *
      * @param methodName
      *            Name of the method.
      * @param executionData
@@ -1173,9 +1197,9 @@ public class TestLinkAPI {
      * @throws TestLinkAPIException
      */
     public Object executeXmlRpcCall(String methodName,
-	    Map<String, Object> executionData) throws XmlRpcException,
-	    TestLinkAPIException {
-	return miscService.executeXmlRpcCall(methodName, executionData);
+            Map<String, Object> executionData) throws XmlRpcException,
+            TestLinkAPIException {
+        return miscService.executeXmlRpcCall(methodName, executionData);
     }
 
 }
