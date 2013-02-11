@@ -2,17 +2,17 @@
  * The MIT License
  *
  * Copyright (c) <2010> <Bruno P. Kinoshita>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,7 +41,7 @@ import br.eti.kinoshita.testlinkjavaapi.util.Util;
 
 /**
  * This class is responsible for managing test projects.
- * 
+ *
  * @author Bruno P. Kinoshita - http://www.kinoshita.eti.br
  * @since 1.9.0-1
  */
@@ -60,7 +60,7 @@ class TestProjectService extends BaseService {
 
     /**
      * Creates a Test Project.
-     * 
+     *
      * @return Created Test Project object.
      */
     protected TestProject createTestProject(String testProjectName,
@@ -108,8 +108,13 @@ class TestProjectService extends BaseService {
 	    Object response = this.executeXmlRpcCall(
 		    TestLinkMethods.GET_TEST_PROJECT_BY_NAME.toString(),
 		    executionData);
-	    Object[] responseArray = Util.castToArray(response);
-	    Map<String, Object> responseMap = (Map<String, Object>) responseArray[0];
+	    Map<String, Object> responseMap = null;
+        if (response instanceof Map) {
+            responseMap = (Map<String, Object>) response;
+        } else {
+            Object[] responseArray = Util.castToArray(response);
+            responseMap = (Map<String, Object>) responseArray[0];
+        }
 	    testProject = Util.getTestProject(responseMap);
 	} catch (XmlRpcException xmlrpcex) {
 	    throw new TestLinkAPIException("Error retrieving test project: "
@@ -120,7 +125,7 @@ class TestProjectService extends BaseService {
     }
 
     /**
-     * 
+     *
      * @return
      * @throws TestLinkAPIException
      */
@@ -149,7 +154,7 @@ class TestProjectService extends BaseService {
 
     /**
      * Retrieves Test Plans associated to a Test Project.
-     * 
+     *
      * @param projectId
      *            Test Project id.
      * @return Associated Test Plans.
