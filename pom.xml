@@ -7,11 +7,18 @@
 	<name>TestLink Java API</name>
 	<description>TestLink Java API interfaces TestLink PHP xml-rpc API.</description>
 
-	<parent>
+	<distributionManagement>
+        <repository>
+            <id>apigee-qa-m2repo</id>
+            <url>scp://174.129.55.44/var/www/html/maven/</url>
+        </repository>
+    </distributionManagement>
+
+	<!-- <parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>5</version>
-	</parent>
+	</parent> -->
 
 	<inceptionYear>2010-2011 the testlink-java-api team</inceptionYear>
 
@@ -214,6 +221,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.3</version>
+            </extension>
+        </extensions>
 	</build>
 
 	<dependencies>
@@ -236,17 +250,19 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
+			<version>1.7.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+		
+		<!-- <dependency> 
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> -->
+		
 		<!-- Configuration APIs -->
 		<dependency>
 			<groupId>commons-configuration</groupId>
