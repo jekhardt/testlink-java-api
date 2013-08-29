@@ -8,10 +8,10 @@
 	<description>TestLink Java API interfaces TestLink PHP xml-rpc API.</description>
 
 	<distributionManagement>
-        <repository>
-            <id>apigee-qa-m2repo</id>
-            <url>scp://174.129.55.44/var/www/html/maven/</url>
-        </repository>
+        <snapshotRepository>
+            <id>rqa</id>
+            <url>http://mavenrepo.eng.apigeeks.net:8081/nexus/content/repositories/rqa</url>
+        </snapshotRepository>
     </distributionManagement>
 
 	<!-- <parent>
